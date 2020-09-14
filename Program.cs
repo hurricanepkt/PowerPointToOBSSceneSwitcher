@@ -2,6 +2,8 @@
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Office.Interop.PowerPoint;
+using Newtonsoft.Json;
+
 //Thanks to CSharpFritz and EngstromJimmy for their gists, snippets, and thoughts.
 
 namespace PowerPointToOBSSceneSwitcher
@@ -31,10 +33,14 @@ namespace PowerPointToOBSSceneSwitcher
                 Console.WriteLine($"Moved to Slide Number {Wn.View.Slide.SlideNumber}");
                 //Text starts at Index 2 ¯\_(ツ)_/¯
                 var note = String.Empty;
-                try { note = Wn.View.Slide.NotesPage.Shapes[2].TextFrame.TextRange.Text; }
+                try
+                {
+                    note = Wn.View.Slide.CustomLayout.Name;
+                }
                 catch { /*no notes*/ }
-                if (note.StartsWith("OBS:")) {
-                    note = new StringReader(note).ReadLine().Substring(4);
+                if (!String.IsNullOrEmpty(note))
+                {
+                  
                     Console.WriteLine($"  Switching to OBS Scene named \"{note}\"");
                     OBS.ChangeScene(note);
                 }
